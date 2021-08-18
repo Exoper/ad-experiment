@@ -11,12 +11,13 @@
     <script src="../../jspsych/extensions/jspsych-ext-webgazer.js"></script>
     <script src="../../jspsych/plugins/jspsych-html-keyboard-response.js"></script>
     <script src="../../jspsych/plugins/jspsych-survey-likert.js"></script>
+    <script src="../../jspsych/plugins/jspsych-survey-text.js"></script>
     <script src="../../jspsych/plugins/jspsych-video-button-response.js"></script>
     <script src="../../jspsych/plugins/jspsych-fullscreen.js"></script>
-  <!--  <script src="../../node_modules/number-to-words/numberToWords.min.js"></script>-->
-
     <script src="../../jspsych/plugins/jspsych-instructions.js"></script>
+    <script src="../../jspsych/plugins/jspsych-image-button-response.js"></script>
     <script src="../saver/fileSaver.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
     <link rel="stylesheet" href="../../jspsych/css/jspsych.css" />
   </head>
@@ -29,10 +30,13 @@
     // if you run this experiment by opening the file directly in the browser,
     // then video preloading will be disabled to prevent CORS errors
 
+    function Redirect() {
+      window.location.href ="/endpage";
+    }
+
+    var scale_1 = ["Yes"];
     var instructions = {
-      type: "html-keyboard-response",
-      stimulus: "Calibration: Fixate on each point for atleast 5 secs before clicking!",
-      trial_duration:5000,
+      type: "instructions",
     };
 
     var scale = [
@@ -41,6 +45,14 @@
       "Neutral",
       "Agree",
       "Strongly Agree",
+    ];
+
+    var likely = [
+    "Highly Unlikely",
+    "Unlikely",
+    "May be",
+    "Likely",
+    "Highly likely",
     ];
 
     var preload = {
@@ -54,19 +66,113 @@
 
     var validation = {
       type: "webgazer-calibrate",
-
     };
 
-    var welcome_trial = {
-      type: "html-keyboard-response",
-      stimulus: "Welcome to Advertising Experiment",
-      choices: jsPsych.NO_KEYS,
-      trial_duration: 1000,
+    var declaration = {
+      type: "survey-likert",
+      questions: [
+        {
+          prompt: "Does your system have a working webcam?",
+          name: "Webcam",
+          labels: scale_1,
+          required: true,
+        },
+        {
+          prompt:
+            "Is your room sufficiently lit with the light being in front of your face rather than back?",
+          name: "Light",
+          labels: scale_1,
+          required: true,
+        },
+        {
+          prompt:
+            "You voluntarily participate in this study and have already signed the consent form.",
+          name: "Consent",
+          labels: scale_1,
+          required: true,
+        },
+      ],
+      preamble: "<h1>Before you proceed</h1>",
+      randomize_question_order: false,
     };
 
-    var demogarphics;
+    var instructions_cal = {
+      type: "html-button-response",
+      stimulus:
+        '<div style="width: 800px;border: thin solid #0000FF ; border-radius: 10px ;">' +
+        `
+    <ul>
+    <li style="text-align:left; padding:8px; font-size: 18px">    Now we will calibrate the web gazer.</li>
+    <li style="text-align:left; padding:8px; font-size: 18px">It will take 2-3 minutes.</li>
+    <li style="text-align:left; padding:8px; font-size: 18px">On the next screen you will see a sequence of black dots. There will be 20 of them.</li>
+    <li style="text-align:left; padding:8px; font-size: 18px">Keep your head steady and look at each dot for atleast 3 seconds, then click the dot.</li>
+    </ul>` +
+        "</div>",
+      choices: ["Continue"],
+    };
 
-    
+    // var web_grazer_instruction = {
+    //   type: "html-keyboard-response",
+    //   stimulus:
+    //     "Web Grazer caliberation will start , focus on the dots for 3-4 sec then click on them",
+    //   choices: jsPsych.NO_KEYS,
+    //   trial_duration: 6000,
+    //   on_start: function () {
+    //     jsPsych.extensions["webgazer"].resume();
+    //     jsPsych.extensions["webgazer"].showPredictions();
+    //   },
+    // };
+
+    var overview = {
+      type: "image-button-response",
+      stimulus: "../assets/images/methodology.png",
+      choices: ["continue"],
+      prompt:
+        "<p>You'll see detailed instructions ahead. Press continue to proceed.</p>",
+    };
+
+    // Need to take demographic information from the user .
+    var demogarphics = {
+      type: "survey-text",
+      questions: [
+        { prompt: "Name : ", columns: 50, name: "firstname" },
+        { prompt: "Age : ", columns: 3, name: "Age", required: true },
+        {
+          prompt: "Gender",
+          columns: 15,
+          name: "Gender",
+          required: true,
+        },
+        {
+          prompt: "Have you taken this test before?",
+          placeholder: "Yes/No",
+          columns: 15,
+          name: "prior_practice",
+        },
+        {
+          prompt: "Profession",
+          columns: 15,
+          name: "Profession",
+          required: true,
+        },
+      ],
+      preamble: "<h1>Basic information</h1>",
+      on_finish: function (data) {
+        // Generating new subject id
+        //console.log(data);
+        var subject_id = jsPsych.randomization.randomID(15);
+        var name = jsPsych.data.get().select("response")["values"][0][
+          "firstname"
+        ];
+        console.log(name);
+        subject_id = name + "_" + subject_id.toString();
+        //console.log(subject_id);
+        jsPsych.data.addProperties({
+          subject: subject_id,
+        });
+      },
+    };
+
     var personality_survey = {
       type: "survey-likert",
       questions: [
@@ -121,12 +227,14 @@
 
     var timeline = [
       preload,
+      demogarphics,
+      overview,
+      declaration,
       init_camera,
-      instructions,
+      instructions_cal,
       validation,
-      fullscreen_trial,
-      welcome_trial,
       personality_survey,
+      fullscreen_trial,
     ];
 
     var post_video_survey = {
@@ -135,24 +243,29 @@
         {
           prompt: "Have you seen the Advertisement before?",
           labels: ["Yes", "No"],
+          required: true,
         },
         {
           prompt: "How much did you LIKE the AD  that you just watched ?",
           labels: scale,
+          required: true
         },
         {
           prompt: "Did you feel excitement while watching the AD?",
           labels: scale,
+          required: true
         },
 
         {
           prompt: "How likely are you to MENTION this ad to someone else ?",
-          labels: scale,
+          labels: likely,
+          required: true
         },
         {
           prompt:
             "If you watched this AD on a OTT platform/ website , how likely would you be to SHARE it with someone else ?",
-          labels: scale,
+          labels: likely,
+          required: true
         },
       ],
       scale_width: 500,
@@ -170,19 +283,31 @@
     };
     timeline.push(video_start_page);
 
+    var num2word = {1:"one",
+                    2:"two",
+                    3:"three",
+                    4:"four"}
+
     for (let i = 2; i <= 2; i++) {
       //console.log(numberToWords.toWords(i));
-      //video_number = numberToWords.toWords(i);
+      video_number = num2word[i];
       var video_trial = {
         type: "video-button-response",
-        stimulus: [`../video/two.mp4`],
+        stimulus: [`video/${video_number}.mp4`],
         choices: ["Continue"],
         button_html: '<div style="font-size:40px;">%choice%</div>',
         margin_vertical: "10px",
         margin_horizontal: "8px",
         prompt:
-          "<p>Once the vidoe ends click on Continue</p><p>When the video stops, click a button to end the trial.</p><p>Response buttons are disabled while the video is playing.</p>",
-        width: 1000,
+          '<div style="width: 800px;border: thin solid #0000FF ; border-radius: 10px ;">' +
+          `
+    <ul>
+    <li style="text-align:left; padding:8px; font-size: 18px">  Once the video ends click on Continue  </li>
+    <li style="text-align:left; padding:8px; font-size: 18px"> After the video you have to fiil a short form that contain questions related to the ad</li>
+
+    </ul>` +
+          "</div>",
+        width: 1500,
         autoplay: true,
         response_ends_trial: true,
         response_allowed_while_playing: false,
@@ -198,7 +323,6 @@
 
       timeline.push(video_trial, post_video_survey);
     }
-    timeline.push(fullscreen_trial_exit);
 
     let constraintObj = {
       audio: false,
@@ -241,63 +365,108 @@
         });
     }
 
-    navigator.mediaDevices
-      .getUserMedia(constraintObj)
-      .then(function (mediaStreamObj) {
-        //connect the media stream to the first video element
-        let video = document.querySelector("video");
-        if ("srcObject" in video) {
-          video.srcObject = mediaStreamObj;
-        } else {
-          //old version
-          video.src = window.URL.createObjectURL(mediaStreamObj);
+    navigator.mediaDevices  
+.getUserMedia(constraintObj)  
+.then(function (mediaStreamObj) { 
+    //connect the media stream to the first video element 
+    let video = document.querySelector("video");  
+    if ("srcObject" in video) { 
+      video.srcObject = mediaStreamObj; 
+    } else {  
+      //old version 
+      video.src = window.URL.createObjectURL(mediaStreamObj); 
+  } 
+  video.onloadedmetadata = function (ev) {  
+      //show in the video element what is being captured by the webcam  
+      //video.play();
+      console.log("Video Recording!");
+  };  
+    //add listeners for saving video/audio  
+    //let start = document.getElementById("btnStart");  
+    //let stop = document.getElementById("btnStop");  
+    //let vidSave = document.getElementById("vid2");  
+    let mediaRecorder = new MediaRecorder(mediaStreamObj);  
+    let chunks = [];  
+    mediaRecorder.start();  
+    console.log(mediaRecorder.state); 
+    // stop.addEventListener("click", (ev) => { 
+    //   mediaRecorder.stop();  
+    // });  
+    mediaRecorder.ondataavailable = function (ev) { 
+      chunks.push(ev.data); 
+        console.log(chunks);
+    };  
+    mediaRecorder.onstop = (ev) => {  
+      let blob = new Blob(chunks, { type: "video/mp4;" });  
+      chunks = [];  
+      // let videoURL = window.URL.createObjectURL(blob); 
+      // vidSave.src = videoURL;  
+
+      //local save
+      // var filename = "data_video.mp4";  
+      // console.log(blob);  
+      // saveAs(blob, filename); 
+      // // Need to save this on Server. 
+      // console.log("File saved Locally"); 
+
+      //var data = new FormData();
+      //data.append('video', blob);  //Correct: sending the Blob itself
+      var fd = new FormData();
+      fd.append('fname', 'test.webm');
+      fd.append('file', blob);
+      $.ajax({
+        type: "POST",
+        enctype: 'multipart/form-data',
+        url: "/video_data",
+        data: fd,
+        processData: false,
+        contentType: false,
+        cache: false,
+        timeout: 600000,
+        success: function (response) {
+            alert("Video saved at server successfully!")
+
+
+        },
+        error: function (e) {
+            console.log("ERROR : ", e);
         }
+    });
+  };  
 
-        video.onloadedmetadata = function (ev) {
-          //show in the video element what is being captured by the webcam
-          video.play();
-        };
+        function saveData(data){
+        $.ajax({
+          type:"POST",
+          cache: false,
+          url: "/save_data", 
+          data: JSON.stringify(data),
+          contentType: "application/json",
+          success:(response)=>{
+            alert("Data saved successfully!")
+            alert("Video saved at server successfully!")
 
-        //add listeners for saving video/audio
-        //let start = document.getElementById("btnStart");
-        //let stop = document.getElementById("btnStop");
-        //let vidSave = document.getElementById("vid2");
-        let mediaRecorder = new MediaRecorder(mediaStreamObj);
-        let chunks = [];
+          }
+          })
 
-        mediaRecorder.start();
-        console.log(mediaRecorder.state);
-
-        // stop.addEventListener("click", (ev) => {
-        //   mediaRecorder.stop();
-        // });
-
-        mediaRecorder.ondataavailable = function (ev) {
-          chunks.push(ev.data);
-        };
-        mediaRecorder.onstop = (ev) => {
-          let blob = new Blob(chunks, { type: "video/mp4;" });
-          chunks = [];
-          // let videoURL = window.URL.createObjectURL(blob);
-          // vidSave.src = videoURL;
-          var filename = "data_video.mp4";
-          console.log(blob);
-          saveAs(blob, filename);
-          // Need to save this on Server.
-          console.log("File savevd Locally");
-        };
+        .fail(function() {
+          alert("A problem occurred while writing to the database. Please contact the researcher for more information.")
+          window.location.href = "/";
+        })
+      }
 
         jsPsych.init({
           timeline: timeline,
           extensions: [{ type: "webgazer" }],
+          show_progress_bar: true,
           on_finish: function () {
+            fullscreen_trial_exit;
             jsPsych.extensions["webgazer"].pause();
             jsPsych.extensions["webgazer"].hidePredictions();
-            jsPsych.data.displayData();
-            mediaRecorder.stop();
-            jsPsych.data.get().localSave('csv','my_data.csv');
-
+            //jsPsych.data.displayData();
             console.log(mediaRecorder.state);
+            saveData({data:jsPsych.data.get().json()});
+            mediaRecorder.stop();
+            Redirect();
           },
         });
       })
@@ -306,4 +475,12 @@
       });
   </script>
 </html>
-
+<!-- 
+/********************************* getUserMedia returns a Promise resolve -
+returns a MediaStream Object reject returns one of the following errors
+AbortError - generic unknown cause NotAllowedError (SecurityError) - user
+rejected permissions NotFoundError - missing media track NotReadableError - user
+permissions given but hardware/OS error OverconstrainedError - constraint video
+settings preventing TypeError - audio: false, video: false
+*********************************/ preload, init_camera, validation,
+fullscreen_trial, welcome_trial, likert_survey, trial_2, fullscreen_trial_exit, -->
