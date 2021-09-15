@@ -1,8 +1,128 @@
 <html>
   <head>
-    <link rel="stylesheet" href="/views/cover/endpage.css" />
+    <link rel="stylesheet" href="views/cover/endpage.css" />
   </head>
 </head>
+<style type="text/css">
+.box {
+  width: 300px;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+  display: block;
+  margin: auto;
+  margin-top: 30px;
+  border-radius: 20px;
+  font-family: "Poppins", sans-serif;
+  padding: 20px 30px 30px 30px;
+  background: #fff;
+  position: relative;
+}
+input {
+  display: block;
+  width: 100%;
+  font-family: "Poppins", sans-serif;
+  margin: auto;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #585858;
+  box-sizing: border-box;
+  outline: none;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+}
+.button {
+  border-radius: 100px;
+  border: none;
+  padding: 16px;
+  font-weight: bold;
+  background: #00d7fb;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:all .3s;
+}
+.button:hover {
+  background: #0193ac;
+  color: #fff;
+}
+
+.field {
+  border-radius: 100px;
+  border: none;
+  padding: 16px;
+  background: #f1f1f1;
+}
+.hidden {
+  visibility: hidden;
+}
+.show {
+  visibility: visible;
+}
+.header {
+  position: absolute;
+  background: #00d7fb;
+  width: 100%;
+  height:60px;
+  padding:20px 0; 
+  left:0;
+  top:0;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  color:#fff;
+  text-align:center;
+  font-size:3em;
+  overflow:hidden;
+}
+.header p {
+  margin:0;
+  position:absolute;
+  top:20%;
+  left:28%;
+  font-size:40px;
+  text-align: center;
+}
+
+.animation {
+  position:absolute;
+  animation: mymove 0.5s forwards;
+}
+
+@keyframes mymove {
+  0%   {left: 50%;}
+  100%  {left: 120%; as}
+}
+.box .form {
+  padding-top: 90px;
+}
+</style>
+<script type="text/javascript">
+  var button = document.querySelector('.button');
+var field = document.querySelector('.field');
+var icon = document.querySelector('.header i');
+var text = document.querySelector('.header p');
+if(button){
+  button.addEventListener('click', function(){
+  
+  if(field.value === ''){
+    field.placeholder = 'You must enter your email';
+    // alert('You must enter an email');
+  } else {
+    icon.classList.toggle('animation');
+    text.classList.toggle('show');
+    let fetchData = {
+          method : 'POST',
+          body : JSON.stringify({email : this.email.value})
+        }
+        fetch('/email', fetchData).then(res => {
+          if(res.ok){
+            success;
+            console.log('yay');
+          }
+          else{
+            window.alert('Error!');
+          }
+        })  
+  }
+});
+}
+</script>
 <body>
     <div class="thankyoucontent">
         <div class="wrapper-1">
@@ -14,17 +134,60 @@
             />
             <h1>Thank you!</h1>
             <p>for taking the experiment, we will reach out to you soon.</p>
+            <div class="box">
+  <div class="header"><i class="fa fa-paper-plane" aria-hidden="true"></i>
+    <p class="hidden">Thanks!</p>
+  </div>
+  <div class="form" action="/email">
+  <input type="text" id ="email" placeholder="Your Email" class="field">
+  <input type="button" value="Subscribe" class="button" id="button">
+  </div>
             <button class="go-home">
               <a href="/"> END</a>
             </button>
           </div>
+          <div id="success" class="header">
+            <h2>Confirm your email!</h2>
+            <p>The last step is to your confirm your email.</p>
+          </div>
       
           <div class="footer-like">
+          
+</div>
             <p></p>
           </div>
         </div>
       </div>
+
 </body>
+<!-- <script type="text/javascript">
+  var cta = document.querySelector('cta');
+  let email = document.querySelector('email');
+  let success = document.querySelector('success');
+
+  if(cta){
+    cta.addEventListener('click' , (event) => {
+      //event.preventDefault();
+      if(this.email.value == null || this.email.value == ""){
+        window.alert("error");
+      } else{
+        let fetchData = {
+          method : 'POST',
+          body : JSON.stringify({email : this.email.value})
+        }
+        fetch('/email', fetchData).then(res => {
+          if(res.ok){
+            success;
+            console.log('yay');
+          }
+          else{
+            window.alert('Error!');
+          }
+        })
+      }
+    })
+}
+</script> -->
 
 </html>
 

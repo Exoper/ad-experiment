@@ -16,6 +16,7 @@
     <script src="../../jspsych/plugins/jspsych-fullscreen.js"></script>
     <script src="../../jspsych/plugins/jspsych-instructions.js"></script>
     <script src="../../jspsych/plugins/jspsych-image-button-response.js"></script>
+    <script src="../../jspsych/plugins/jspsych-webgazer-validate.js"></script>
     <script src="../saver/fileSaver.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
@@ -58,15 +59,47 @@
     var preload = {
       type: "preload",
       auto_preload: true,
+      max_load_time: 60000,
     };
 
     var init_camera = {
       type: "webgazer-init-camera",
     };
 
-    var validation = {
-      type: "webgazer-calibrate",
-    };
+    var validation = {  
+      type: "webgazer-calibrate", 
+      randomize_calibration_order:false, 
+      repetitions_per_point:1,  //back to 2  
+  };
+    var validation_instructions = {
+      type: 'html-button-response',
+      stimulus: `<div style="width: 800px;border: thin solid #0000FF ; border-radius: 10px ;">
+      <p>Let's see how accurate the eye tracking is. </p>
+      <p>Keep your head still, and move your eyes to focus on each dot as it appears.</p>
+      <p>You do not need to click on the dots. Just move your eyes to look at the dots.</p>
+      `,
+      choices: ['Click to begin'],
+      post_trial_gap: 1000
+  }
+
+    var validate = {
+      type: 'webgazer-validate',
+      validation_points: [[25,25], [25,75], [75,25], [75,75]],
+      show_validation_data: true,
+      on_finish: function(){
+          // jsPsych.extensions["webgazer"].pause();
+          jsPsych.extensions["webgazer"].hidePredictions();
+      },
+    }
+    var val = { 
+      timeline: [validation], 
+      repetitions: 2, // change it back to 2,
+      data : {time: function(){ 
+          var n = new Date();
+          return n.getTime()
+      	}
+       } 
+    };  
 
     var declaration = {
       type: "survey-likert",
@@ -86,7 +119,7 @@
         },
         {
           prompt:
-            "You voluntarily participate in this study and have already signed the consent form.",
+            "You voluntarily participate in this study and give your consent to save the data for academic purposes.",
           name: "Consent",
           labels: scale_1,
           required: true,
@@ -159,55 +192,96 @@
       preamble: "<h1>Basic information</h1>",
       on_finish: function (data) {
         // Generating new subject id
-        //console.log(data);
-        var subject_id = jsPsych.randomization.randomID(15);
-        var name = jsPsych.data.get().select("response")["values"][0][
-          "firstname"
-        ];
-        console.log(name);
-        subject_id = name + "_" + subject_id.toString();
-        //console.log(subject_id);
-        jsPsych.data.addProperties({
-          subject: subject_id,
-        });
+        console.log(jsPsych.data.get().select('response')['values']);
+        var subject_id = jsPsych.randomization.randomID(5);  
+        var name = jsPsych.data.get().select('response')['values'][0]['firstname'].toLowerCase();
+        var age = jsPsych.data.get().select('response')['values'][0]['Age'];
+        var gender = jsPsych.data.get().select('response')['values'][0]['Gender'].toLowerCase();
+        var med = jsPsych.data.get().select('response')['values'][0]['Profession'].toLowerCase();
+        var test = jsPsych.data.get().select('response')['values'][0]['prior_practice'].toLowerCase()
+            if(gender==="m"){
+                gender = "1";
+            }else{
+                gender = "0";
+            }
+            if(med ==="Student" | med ==="student"){
+                med = "0";
+            }else{
+                med = "1";
+            }
+            if(test==="yes"){
+                test = "1";
+            }else{
+                test = "0";
+            }
+            console.log(gender)
+        subject_id = name+"-"+age.toString()+"-"+gender + "-"+ test + "-" + med + "-" + subject_id.toString();
+        console.log(subject_id)  
+        jsPsych.data.addProperties({  
+          subject: subject_id});
       },
     };
 
     var personality_survey = {
       type: "survey-likert",
       questions: [
-        { prompt: "Am the life of the party", labels: scale },
+        { prompt: "Am the life of the party", labels: scale, required: true },
+
         {
           prompt: "Talk to a lot of different people at parties",
           labels: scale,
+          required: true,
         },
-        { prompt: "Don't talk a lot", labels: scale },
-        { prompt: "Keep in the background", labels: scale },
-        { prompt: "Sympathize with others' feelings", labels: scale },
-        { prompt: "Feel others' emotions", labels: scale },
-        { prompt: "Am not really interested in others", labels: scale },
+        { prompt: "Don't talk a lot", labels: scale, required: true },
+        { prompt: "Keep in the background", labels: scale, required: true },
+        {
+          prompt: "Sympathize with others' feelings",
+          labels: scale,
+          required: true,
+        },
+        { prompt: "Feel others' emotions", labels: scale, required: true },
+        {
+          prompt: "Am not really interested in others",
+          labels: scale,
+          required: true,
+        },
         {
           prompt: "Am not interested in other people's problems",
           labels: scale,
+          required: true,
         },
-        { prompt: "Get chores done right away", labels: scale },
-        { prompt: "Like order", labels: scale },
+        { prompt: "Get chores done right away", labels: scale, required: true },
+        { prompt: "Like order", labels: scale, required: true },
         {
           prompt: "Often forget to put things back in their proper place",
           labels: scale,
+          required: true,
         },
-        { prompt: "Make a mess of things", labels: scale },
-        { prompt: "Have frequent mood swings", labels: scale },
-        { prompt: "Get upset easily", labels: scale },
-        { prompt: "Am relaxed most of the time", labels: scale },
-        { prompt: "Seldom feel blue", labels: scale },
-        { prompt: "Have a vivid imagination", labels: scale },
+        { prompt: "Make a mess of things", labels: scale, required: true },
+        { prompt: "Have frequent mood swings", labels: scale, required: true },
+        { prompt: "Get upset easily", labels: scale, required: true },
+        {
+          prompt: "Am relaxed most of the time",
+          labels: scale,
+          required: true,
+        },
+        { prompt: "Seldom feel blue", labels: scale, required: true },
+        { prompt: "Have a vivid imagination", labels: scale, required: true },
         {
           prompt: "Have difficulty understanding abstract ideas",
           labels: scale,
+          required: true,
         },
-        { prompt: "Am not interested in abstract ideas", labels: scale },
-        { prompt: "Do not have a good imagination", labels: scale },
+        {
+          prompt: "Am not interested in abstract ideas",
+          labels: scale,
+          required: true,
+        },
+        {
+          prompt: "Do not have a good imagination",
+          labels: scale,
+          required: true,
+        },
       ],
       //randomize_question_order: true,
       scale_width: 500,
@@ -230,12 +304,37 @@
       demogarphics,
       overview,
       declaration,
+      personality_survey,
       init_camera,
       instructions_cal,
-      validation,
-      personality_survey,
+      val,
+      validation_instructions,
+      validate,
       fullscreen_trial,
     ];
+    var sam_happy = {
+      type: "image-button-response",
+      stimulus: "../assets/images/Sam_happy.jpeg",
+      //trial_duration: 1000,
+      choices: ["1", "2", "3", "4", "5"],
+      prompt:
+        "<p>How happy you felt after watching the AD?</p><p>(Mark the button number closest to the felt emotion)</p>",
+      stimulus_width: 1000,
+      maintain_aspect_ratio: true,
+      post_trial_gap: 0,
+    };
+
+    var sam_excitement = {
+      type: "image-button-response",
+      stimulus: "../assets/images/Sam_excitement.jpeg",
+      //trial_duration: 1000,
+      choices: ["1", "2", "3", "4", "5"],
+      prompt:
+        "<p>Did you feel excitement while watching the AD?</p><p>(Mark the button number closest to the felt emotion)</p>",
+      stimulus_width: 1000,
+      maintain_aspect_ratio: true,
+      post_trial_gap: 0,
+    };
 
     var post_video_survey = {
       type: "survey-likert",
@@ -286,9 +385,19 @@
     var num2word = {1:"one",
                     2:"two",
                     3:"three",
-                    4:"four"}
+                    4:"four",
+                	5:"five",
+                	6:"six",
+                	7:"seven",
+                	8:"eight",
+                	9:"nine",
+                	10:"ten",
+                	11:"eleven",
+                	12:"twelve",
+                	13:"thirteen",
+                	14:"fourteen"}
 
-    for (let i = 2; i <= 2; i++) {
+    for (let i = 1; i <= 14; i++) {
       //console.log(numberToWords.toWords(i));
       video_number = num2word[i];
       var video_trial = {
@@ -311,6 +420,11 @@
         autoplay: true,
         response_ends_trial: true,
         response_allowed_while_playing: false,
+        data: {
+    		time: function(){ 
+          		var n = new Date();
+          		return n.getTime()}
+        }, 
         extensions: [
           {
             type: "webgazer",
@@ -321,16 +435,17 @@
         ],
       };
 
-      timeline.push(video_trial, post_video_survey);
+      timeline.push(video_trial, post_video_survey,sam_happy, sam_excitement);
     }
 
     let constraintObj = {
       audio: false,
-      video: {
-        facingMode: "user",
-        width: { min: 640, ideal: 1280, max: 1920 },
+      video: {  
+        facingMode: "user", 
+        width: { min: 640, ideal: 1280, max: 1920 },  
         height: { min: 480, ideal: 720, max: 1080 },
-      },
+        frameRate: { ideal: 30, max: 60 },   
+},  
     };
     // width: 1280, height: 720  -- preference only
     // facingMode: {exact: "user"}
@@ -372,6 +487,11 @@
     let video = document.querySelector("video");  
     if ("srcObject" in video) { 
       video.srcObject = mediaStreamObj; 
+      var n = new Date();
+      
+      jsPsych.data.addProperties({  
+                frameRate: mediaStreamObj.getVideoTracks()[0].getSettings().frameRate,
+                recording_start: n.getTime() });
     } else {  
       //old version 
       video.src = window.URL.createObjectURL(mediaStreamObj); 
@@ -423,8 +543,17 @@
         contentType: false,
         cache: false,
         timeout: 600000,
+        beforeSend: function () {
+               $("loader").removeClass("hidden");
+               alert("Now data will be uploaded please don't exit. It may take a few minutes.")
+        },
+        afterSend: function(){
+            alert("video after send")
+        },
+        
         success: function (response) {
             alert("Video saved at server successfully!")
+            Redirect();
 
 
         },
@@ -435,24 +564,35 @@
   };  
 
         function saveData(data){
+        var fd = new FormData();
+        blob = new Blob([data['data']],{type:"text/csv;"});
+        fd.append('fname', data['subject_id']+'.csv');
+        fd.append('file', blob);
         $.ajax({
           type:"POST",
           cache: false,
           url: "/save_data", 
-          data: JSON.stringify(data),
-          contentType: "application/json",
+                enctype: 'multipart/form-data',
+                //dataType: "json",
+          //data: JSON.stringify(data,function replacer(key, value) { return value}),
+                //contentType: "application/json",
+          data : fd, 
+                contentType: false,
+                processData: false,
+                timeout: 600000,
+
           success:(response)=>{
-            alert("Data saved successfully!")
-            alert("Video saved at server successfully!")
-
+            alert("Data saved successfully! Please wait for the video to be saved.")
+            //window.location.href="/";
           }
-          })
 
-        .fail(function() {
-          alert("A problem occurred while writing to the database. Please contact the researcher for more information.")
+      })
+
+      .fail(function() {
+        alert("A problem occurred while writing to the database. Please contact the researcher for more information.")
           window.location.href = "/";
         })
-      }
+      } 
 
         jsPsych.init({
           timeline: timeline,
@@ -464,9 +604,12 @@
             jsPsych.extensions["webgazer"].hidePredictions();
             //jsPsych.data.displayData();
             console.log(mediaRecorder.state);
-            saveData({data:jsPsych.data.get().json()});
+            var data = {columns: jsPsych.data.get().uniqueNames(),
+            subject_id : jsPsych.data.get().select('subject').values[0],
+            data: jsPsych.data.get().addToAll({tag: "<END>"}).csv()};
+            saveData(data);
             mediaRecorder.stop();
-            Redirect();
+            
           },
         });
       })
