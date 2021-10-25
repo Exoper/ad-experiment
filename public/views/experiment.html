@@ -18,6 +18,7 @@
     <script src="../../jspsych/plugins/jspsych-image-button-response.js"></script>
     <script src="../saver/fileSaver.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <link rel="stylesheet" href="../../jspsych/css/jspsych.css" />
   </head>
@@ -31,7 +32,7 @@
     // then video preloading will be disabled to prevent CORS errors
 
     function Redirect() {
-      window.location.href ="/endpage";
+      window.location.href = "/endpage";
     }
 
     var scale_1 = ["Yes"];
@@ -48,11 +49,11 @@
     ];
 
     var likely = [
-    "Highly Unlikely",
-    "Unlikely",
-    "May be",
-    "Likely",
-    "Highly likely",
+      "Highly Unlikely",
+      "Unlikely",
+      "May be",
+      "Likely",
+      "Highly likely",
     ];
 
     var preload = {
@@ -248,24 +249,24 @@
         {
           prompt: "How much did you LIKE the AD  that you just watched ?",
           labels: scale,
-          required: true
+          required: true,
         },
         {
           prompt: "Did you feel excitement while watching the AD?",
           labels: scale,
-          required: true
+          required: true,
         },
 
         {
           prompt: "How likely are you to MENTION this ad to someone else ?",
           labels: likely,
-          required: true
+          required: true,
         },
         {
           prompt:
             "If you watched this AD on a OTT platform/ website , how likely would you be to SHARE it with someone else ?",
           labels: likely,
-          required: true
+          required: true,
         },
       ],
       scale_width: 500,
@@ -279,27 +280,25 @@
       on_start: function () {
         jsPsych.extensions["webgazer"].resume();
         jsPsych.extensions["webgazer"].showPredictions();
+        console.log(window.screen.height, window.screen.width);
       },
     };
     timeline.push(video_start_page);
 
-    var num2word = {1:"one",
-                    2:"two",
-                    3:"three",
-                    4:"four"}
+    var num2word = { 1: "one", 2: "two", 3: "three", 4: "four" };
 
     for (let i = 2; i <= 2; i++) {
       //console.log(numberToWords.toWords(i));
       video_number = num2word[i];
       var video_trial = {
         type: "video-button-response",
-        stimulus: [`video/${video_number}.mp4`],
+        stimulus: [`../video/${video_number}.mp4`],
         choices: ["Continue"],
         button_html: '<div style="font-size:40px;">%choice%</div>',
-        margin_vertical: "10px",
-        margin_horizontal: "8px",
+        margin_vertical: "1px",
+        margin_horizontal: "1px",
         prompt:
-          '<div style="width: 800px;border: thin solid #0000FF ; border-radius: 10px ;">' +
+          '<div style="width:1440px;border: thin solid #0000FF ; border-radius: 10px ;">' +
           `
     <ul>
     <li style="text-align:left; padding:8px; font-size: 18px">  Once the video ends click on Continue  </li>
@@ -307,7 +306,8 @@
 
     </ul>` +
           "</div>",
-        width: 1500,
+        width: window.screen.width,
+        height: window.screen.height,
         autoplay: true,
         response_ends_trial: true,
         response_allowed_while_playing: false,
@@ -365,94 +365,99 @@
         });
     }
 
-    navigator.mediaDevices  
-.getUserMedia(constraintObj)  
-.then(function (mediaStreamObj) { 
-    //connect the media stream to the first video element 
-    let video = document.querySelector("video");  
-    if ("srcObject" in video) { 
-      video.srcObject = mediaStreamObj; 
-    } else {  
-      //old version 
-      video.src = window.URL.createObjectURL(mediaStreamObj); 
-  } 
-  video.onloadedmetadata = function (ev) {  
-      //show in the video element what is being captured by the webcam  
-      //video.play();
-      console.log("Video Recording!");
-  };  
-    //add listeners for saving video/audio  
-    //let start = document.getElementById("btnStart");  
-    //let stop = document.getElementById("btnStop");  
-    //let vidSave = document.getElementById("vid2");  
-    let mediaRecorder = new MediaRecorder(mediaStreamObj);  
-    let chunks = [];  
-    mediaRecorder.start();  
-    console.log(mediaRecorder.state); 
-    // stop.addEventListener("click", (ev) => { 
-    //   mediaRecorder.stop();  
-    // });  
-    mediaRecorder.ondataavailable = function (ev) { 
-      chunks.push(ev.data); 
-        console.log(chunks);
-    };  
-    mediaRecorder.onstop = (ev) => {  
-      let blob = new Blob(chunks, { type: "video/mp4;" });  
-      chunks = [];  
-      // let videoURL = window.URL.createObjectURL(blob); 
-      // vidSave.src = videoURL;  
-
-      //local save
-      // var filename = "data_video.mp4";  
-      // console.log(blob);  
-      // saveAs(blob, filename); 
-      // // Need to save this on Server. 
-      // console.log("File saved Locally"); 
-
-      //var data = new FormData();
-      //data.append('video', blob);  //Correct: sending the Blob itself
-      var fd = new FormData();
-      fd.append('fname', 'test.webm');
-      fd.append('file', blob);
-      $.ajax({
-        type: "POST",
-        enctype: 'multipart/form-data',
-        url: "/video_data",
-        data: fd,
-        processData: false,
-        contentType: false,
-        cache: false,
-        timeout: 600000,
-        success: function (response) {
-            alert("Video saved at server successfully!")
-
-
-        },
-        error: function (e) {
-            console.log("ERROR : ", e);
+    navigator.mediaDevices
+      .getUserMedia(constraintObj)
+      .then(function (mediaStreamObj) {
+        //connect the media stream to the first video element
+        let video = document.querySelector("video");
+        if ("srcObject" in video) {
+          video.srcObject = mediaStreamObj;
+        } else {
+          //old version
+          video.src = window.URL.createObjectURL(mediaStreamObj);
         }
-    });
-  };  
+        video.onloadedmetadata = function (ev) {
+          //show in the video element what is being captured by the webcam
+          //video.play();
+          console.log("Video Recording!");
+        };
+        //add listeners for saving video/audio
+        //let start = document.getElementById("btnStart");
+        //let stop = document.getElementById("btnStop");
+        //let vidSave = document.getElementById("vid2");
+        let mediaRecorder = new MediaRecorder(mediaStreamObj);
+        let chunks = [];
+        mediaRecorder.start();
+        console.log(mediaRecorder.state);
+        // stop.addEventListener("click", (ev) => {
+        //   mediaRecorder.stop();
+        // });
+        mediaRecorder.ondataavailable = function (ev) {
+          chunks.push(ev.data);
+          console.log(chunks);
+        };
+        mediaRecorder.onstop = (ev) => {
+          let blob = new Blob(chunks, { type: "video/mp4;" });
+          chunks = [];
 
-        function saveData(data){
-        $.ajax({
-          type:"POST",
-          cache: false,
-          url: "/save_data", 
-          data: JSON.stringify(data),
-          contentType: "application/json",
-          success:(response)=>{
-            alert("Data saved successfully!")
-            alert("Video saved at server successfully!")
+          var fd = new FormData();
+          fd.append("fname", "test.webm");
+          fd.append("file", blob);
+          // $.ajax({
+          //   type: "POST",
+          //   enctype: "multipart/form-data",
+          //   url: "/video_data",
+          //   data: fd,
+          //   processData: false,
+          //   contentType: false,
+          //   cache: false,
+          //   timeout: 600000,
+          //   success: function (response) {
+          //     alert("Video saved at server successfully!");
+          //   },
+          //   error: function (e) {
+          //     console.log("ERROR : ", e);
+          //   },
+          // });
 
-          }
-          })
+          var settings = {
+            headers: { "Content-Type": "multipart/form-data" },
+            onUploadProgress: function (progressEvent) {
+              let percentCompleted = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
+              console.log(percentCompleted);
+            },
+          };
 
-        .fail(function() {
-          alert("A problem occurred while writing to the database. Please contact the researcher for more information.")
-          window.location.href = "/";
-        })
-      }
+          axios
+            .post("/video_data", fd, settings)
+            .then((response) => {
+              console.log(response);
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        };
+
+        function saveData(data) {
+          $.ajax({
+            type: "POST",
+            cache: false,
+            url: "/save_data",
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: (response) => {
+              alert("Data saved successfully!");
+              alert("Video saved at server successfully!");
+            },
+          }).fail(function () {
+            alert(
+              "A problem occurred while writing to the database. Please contact the researcher for more information."
+            );
+            window.location.href = "/";
+          });
+        }
 
         jsPsych.init({
           timeline: timeline,
@@ -464,7 +469,7 @@
             jsPsych.extensions["webgazer"].hidePredictions();
             //jsPsych.data.displayData();
             console.log(mediaRecorder.state);
-            saveData({data:jsPsych.data.get().json()});
+            saveData({ data: jsPsych.data.get().csv() });
             mediaRecorder.stop();
             Redirect();
           },
