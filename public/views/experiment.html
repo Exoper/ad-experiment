@@ -405,10 +405,10 @@
         stimulus: [`video/${video_number}.mp4`],
         choices: ["Continue"],
         button_html: '<div style="font-size:40px;">%choice%</div>',
-        margin_vertical: "10px",
-        margin_horizontal: "8px",
+        margin_vertical: "1px",
+        margin_horizontal: "1px",
         prompt:
-          '<div style="width: 800px;border: thin solid #0000FF ; border-radius: 10px ;">' +
+          '<div style="width: 1440px;border: thin solid #0000FF ; border-radius: 10px ;">' +
           `
     <ul>
     <li style="text-align:left; padding:8px; font-size: 18px">  Once the video ends click on Continue  </li>
@@ -416,7 +416,8 @@
 
     </ul>` +
           "</div>",
-        width: 1500,
+        width: window.screen.width,
+        height: window.screen.height,
         autoplay: true,
         response_ends_trial: true,
         response_allowed_while_playing: false,
