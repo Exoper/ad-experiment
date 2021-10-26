@@ -16,8 +16,8 @@ app = express();
 app.use(express.static(__dirname+'/public'));
 app.use('/jspsych', express.static(__dirname + "/jspsych"));
 
-app.use(express.json({limit: '500mb'}));
-app.use(express.urlencoded({limit: '500mb',extended:false}));
+app.use(express.json({limit: '1000mb'}));
+app.use(express.urlencoded({limit: '1000mb',extended:false}));
 
 console.log(__dirname);
 
