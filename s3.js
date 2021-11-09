@@ -7,11 +7,6 @@ const S3 = require('aws-sdk/clients/s3')
 // const accessKeyId = process.env.AWS_ACCESS_KEY
 // const secretAccessKey = process.env.AWS_SECRET_KEY
 
-const bucketName = "neuro-ads"
-const region = "us-east-2"
-const accessKeyId = "AKIAS7QUOL7WO7NF2UDU"
-const secretAccessKey = "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"
-
 
 const s3 = new S3({
   region,
