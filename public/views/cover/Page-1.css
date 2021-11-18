@@ -1,5 +1,5 @@
 .u-section-1 .u-sheet-1 {
-  min-height: 1722px;
+  min-height: 1222px;
 }
 
 .u-section-1 .u-shape-1 {
@@ -12,7 +12,7 @@
 .u-section-1 .u-image-1 {
   width: 646px;
   height: 646px;
-  background-image: url("/assets/images/GettyImages-1215068495-600x360.jpeg");
+  background-image: url("../../assets/images/GettyImages-1215068495-600x360.jpeg");
   background-position: 50% 50%;
   margin: -748px auto 0 82px;
 }
@@ -20,7 +20,7 @@
 .u-section-1 .u-image-2 {
   width: 283px;
   height: 283px;
-  background-image: url("/assets/images/images.jpeg");
+  background-image: url("../../assets/images/images.jpeg");
   background-position: 50% 50%;
   margin: -102px auto 0 60px;
 }

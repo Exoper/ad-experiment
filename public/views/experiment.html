@@ -1,623 +1,662 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <script src="../../jspsych/jspsych.js"></script>
-    <script src="../../jspsych/plugins/jspsych-video-button-response.js"></script>
-    <script src="../../jspsych/plugins/jspsych-html-button-response.js"></script>
-    <script src="../../jspsych/plugins/jspsych-preload.js"></script>
-    <script src="../../jspsych/plugins/jspsych-webgazer-init-camera.js"></script>
-    <script src="../../jspsych/plugins/jspsych-webgazer-calibrate.js"></script>
-    <script src="../../jspsych/examples/js/webgazer/webgazer.js"></script>
-    <script src="../../jspsych/extensions/jspsych-ext-webgazer.js"></script>
-    <script src="../../jspsych/plugins/jspsych-html-keyboard-response.js"></script>
-    <script src="../../jspsych/plugins/jspsych-survey-likert.js"></script>
-    <script src="../../jspsych/plugins/jspsych-survey-text.js"></script>
-    <script src="../../jspsych/plugins/jspsych-video-button-response.js"></script>
-    <script src="../../jspsych/plugins/jspsych-fullscreen.js"></script>
-    <script src="../../jspsych/plugins/jspsych-instructions.js"></script>
-    <script src="../../jspsych/plugins/jspsych-image-button-response.js"></script>
-    <script src="../../jspsych/plugins/jspsych-webgazer-validate.js"></script>
-    <script src="../saver/fileSaver.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<head>
+		<script src="../../jspsych/jspsych.js"></script>
+		<script src="../../jspsych/plugins/jspsych-video-button-response.js"></script>
+		<script src="../../jspsych/plugins/jspsych-html-button-response.js"></script>
+		<script src="../../jspsych/plugins/jspsych-preload.js"></script>
+		<script src="../../jspsych/plugins/jspsych-webgazer-init-camera.js"></script>
+		<script src="../../jspsych/plugins/jspsych-webgazer-calibrate.js"></script>
+		<script src="../../jspsych/examples/js/webgazer/webgazer.js"></script>
+		<script src="../../jspsych/extensions/jspsych-ext-webgazer.js"></script>
+		<script src="../../jspsych/plugins/jspsych-html-keyboard-response.js"></script>
+		<script src="../../jspsych/plugins/jspsych-survey-likert.js"></script>
+		<script src="../../jspsych/plugins/jspsych-survey-text.js"></script>
+		<script src="../../jspsych/plugins/jspsych-video-button-response.js"></script>
+		<script src="../../jspsych/plugins/jspsych-fullscreen.js"></script>
+		<script src="../../jspsych/plugins/jspsych-instructions.js"></script>
+		<script src="../../jspsych/plugins/jspsych-image-button-response.js"></script>
+		<script src="../../jspsych/plugins/jspsych-webgazer-validate.js"></script>
+		<script src="../saver/fileSaver.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
-    <link rel="stylesheet" href="../../jspsych/css/jspsych.css" />
-  </head>
-  <body>
-    <video controls></video>
-  </body>
+		<link rel="stylesheet" href="../../jspsych/css/jspsych.css" />
+	</head>
+	<body>
+		<video controls></video>
+	</body>
 
-  <script>
-    // preloading videos only works when the file is running on a server
-    // if you run this experiment by opening the file directly in the browser,
-    // then video preloading will be disabled to prevent CORS errors
 
-    function Redirect() {
-      window.location.href ="/endpage";
-    }
+	<script>
+		// preloading videos only works when the file is running on a server
+		// if you run this experiment by opening the file directly in the browser,
+		// then video preloading will be disabled to prevent CORS errors
 
-    var scale_1 = ["Yes"];
-    var instructions = {
-      type: "instructions",
-    };
+		function Redirect() {
+			window.location.href = "/endpage";
+		}
 
-    var scale = [
-      "Strongly Disagree",
-      "Disagree",
-      "Neutral",
-      "Agree",
-      "Strongly Agree",
-    ];
+		var scale_1 = ["Yes"];
+		var instructions = {
+			type: "instructions",
+		};
 
-    var likely = [
-    "Highly Unlikely",
-    "Unlikely",
-    "May be",
-    "Likely",
-    "Highly likely",
-    ];
+		var scale = [
+			"Strongly Disagree",
+			"Disagree",
+			"Neutral",
+			"Agree",
+			"Strongly Agree",
+		];
 
-    var preload = {
-      type: "preload",
-      auto_preload: true,
-      max_load_time: 60000,
-    };
+		var likely = [
+			"Highly Unlikely",
+			"Unlikely",
+			"May be",
+			"Likely",
+			"Highly likely",
+		];
 
-    var init_camera = {
-      type: "webgazer-init-camera",
-    };
+		var preload = {
+			type: "preload",
+			auto_preload: true,
+			max_load_time: 60000,
+		};
 
-    var validation = {  
-      type: "webgazer-calibrate", 
-      randomize_calibration_order:false, 
-      repetitions_per_point:1,  //back to 2  
-  };
-    var validation_instructions = {
-      type: 'html-button-response',
-      stimulus: `<div style="width: 800px;border: thin solid #0000FF ; border-radius: 10px ;">
+		var init_camera = {
+			type: "webgazer-init-camera",
+		};
+
+		var validation = {
+			type: "webgazer-calibrate",
+			randomize_calibration_order: false,
+			repetitions_per_point: 1, //back to 2
+		};
+		var validation_instructions = {
+			type: "html-button-response",
+			stimulus: `<div style="width: 800px;border: thin solid #0000FF ; border-radius: 10px ;">
       <p>Let's see how accurate the eye tracking is. </p>
       <p>Keep your head still, and move your eyes to focus on each dot as it appears.</p>
       <p>You do not need to click on the dots. Just move your eyes to look at the dots.</p>
       `,
-      choices: ['Click to begin'],
-      post_trial_gap: 1000
-  }
+			choices: ["Click to begin"],
+			post_trial_gap: 1000,
+		};
 
-    var validate = {
-      type: 'webgazer-validate',
-      validation_points: [[25,25], [25,75], [75,25], [75,75]],
-      show_validation_data: true,
-      on_finish: function(){
-          // jsPsych.extensions["webgazer"].pause();
-          jsPsych.extensions["webgazer"].hidePredictions();
-      },
-    }
-    var val = { 
-      timeline: [validation], 
-      repetitions: 2, // change it back to 2,
-      data : {time: function(){ 
-          var n = new Date();
-          return n.getTime()
-      	}
-       } 
-    };  
+		var validate = {
+			type: "webgazer-validate",
+			validation_points: [
+				[25, 25],
+				[25, 75],
+				[75, 25],
+				[75, 75],
+			],
+			show_validation_data: true,
+			on_finish: function () {
+				// jsPsych.extensions["webgazer"].pause();
+				jsPsych.extensions["webgazer"].hidePredictions();
+			},
+		};
+		var val = {
+			timeline: [validation],
+			repetitions: 2, // change it back to 2,
+			data: {
+				time: function () {
+					var n = new Date();
+					return n.getTime();
+				},
+			},
+		};
 
-    var declaration = {
-      type: "survey-likert",
-      questions: [
-        {
-          prompt: "Does your system have a working webcam?",
-          name: "Webcam",
-          labels: scale_1,
-          required: true,
-        },
-        {
-          prompt:
-            "Is your room sufficiently lit with the light being in front of your face rather than back?",
-          name: "Light",
-          labels: scale_1,
-          required: true,
-        },
-        {
-          prompt:
-            "You voluntarily participate in this study and give your consent to save the data for academic purposes.",
-          name: "Consent",
-          labels: scale_1,
-          required: true,
-        },
-      ],
-      preamble: "<h1>Before you proceed</h1>",
-      randomize_question_order: false,
-    };
+		var declaration = {
+			type: "survey-likert",
+			questions: [
+				{
+					prompt: "Does your system have a working webcam?",
+					name: "Webcam",
+					labels: scale_1,
+					required: true,
+				},
+				{
+					prompt:
+						"Is your room sufficiently lit with the light being in front of your face rather than back?",
+					name: "Light",
+					labels: scale_1,
+					required: true,
+				},
+				{
+					prompt:
+						"You voluntarily participate in this study and give your consent to save the data for academic purposes.",
+					name: "Consent",
+					labels: scale_1,
+					required: true,
+				},
+			],
+			preamble: "<h1>Before you proceed</h1>",
+			randomize_question_order: false,
+		};
 
-    var instructions_cal = {
-      type: "html-button-response",
-      stimulus:
-        '<div style="width: 800px;border: thin solid #0000FF ; border-radius: 10px ;">' +
-        `
+		var instructions_cal = {
+			type: "html-button-response",
+			stimulus:
+				'<div style="width: 800px;border: thin solid #0000FF ; border-radius: 10px ;">' +
+				`
     <ul>
     <li style="text-align:left; padding:8px; font-size: 18px">    Now we will calibrate the web gazer.</li>
     <li style="text-align:left; padding:8px; font-size: 18px">It will take 2-3 minutes.</li>
     <li style="text-align:left; padding:8px; font-size: 18px">On the next screen you will see a sequence of black dots. There will be 20 of them.</li>
     <li style="text-align:left; padding:8px; font-size: 18px">Keep your head steady and look at each dot for atleast 3 seconds, then click the dot.</li>
     </ul>` +
-        "</div>",
-      choices: ["Continue"],
-    };
+				"</div>",
+			choices: ["Continue"],
+		};
 
-    // var web_grazer_instruction = {
-    //   type: "html-keyboard-response",
-    //   stimulus:
-    //     "Web Grazer caliberation will start , focus on the dots for 3-4 sec then click on them",
-    //   choices: jsPsych.NO_KEYS,
-    //   trial_duration: 6000,
-    //   on_start: function () {
-    //     jsPsych.extensions["webgazer"].resume();
-    //     jsPsych.extensions["webgazer"].showPredictions();
-    //   },
-    // };
+		// var web_grazer_instruction = {
+		//   type: "html-keyboard-response",
+		//   stimulus:
+		//     "Web Grazer caliberation will start , focus on the dots for 3-4 sec then click on them",
+		//   choices: jsPsych.NO_KEYS,
+		//   trial_duration: 6000,
+		//   on_start: function () {
+		//     jsPsych.extensions["webgazer"].resume();
+		//     jsPsych.extensions["webgazer"].showPredictions();
+		//   },
+		// };
 
-    var overview = {
-      type: "image-button-response",
-      stimulus: "../assets/images/methodology.png",
-      choices: ["continue"],
-      prompt:
-        "<p>You'll see detailed instructions ahead. Press continue to proceed.</p>",
-    };
+		var overview = {
+			type: "image-button-response",
+			stimulus: "../assets/images/methodology.png",
+			choices: ["continue"],
+			stimulus_width: window.screen.width-200,
+			prompt:
+				"<p>You'll see detailed instructions ahead. Press continue to proceed.</p>",
+		};
 
-    // Need to take demographic information from the user .
-    var demogarphics = {
-      type: "survey-text",
-      questions: [
-        { prompt: "Name : ", columns: 50, name: "firstname" },
-        { prompt: "Age : ", columns: 3, name: "Age", required: true },
-        {
-          prompt: "Gender",
-          columns: 15,
-          name: "Gender",
-          required: true,
-        },
-        {
-          prompt: "Have you taken this test before?",
-          placeholder: "Yes/No",
-          columns: 15,
-          name: "prior_practice",
-        },
-        {
-          prompt: "Profession",
-          columns: 15,
-          name: "Profession",
-          required: true,
-        },
-      ],
-      preamble: "<h1>Basic information</h1>",
-      on_finish: function (data) {
-        // Generating new subject id
-        console.log(jsPsych.data.get().select('response')['values']);
-        var subject_id = jsPsych.randomization.randomID(5);  
-        var name = jsPsych.data.get().select('response')['values'][0]['firstname'].toLowerCase();
-        var age = jsPsych.data.get().select('response')['values'][0]['Age'];
-        var gender = jsPsych.data.get().select('response')['values'][0]['Gender'].toLowerCase();
-        var med = jsPsych.data.get().select('response')['values'][0]['Profession'].toLowerCase();
-        var test = jsPsych.data.get().select('response')['values'][0]['prior_practice'].toLowerCase()
-            if(gender==="m"){
-                gender = "1";
-            }else{
-                gender = "0";
-            }
-            if(med ==="Student" | med ==="student"){
-                med = "0";
-            }else{
-                med = "1";
-            }
-            if(test==="yes"){
-                test = "1";
-            }else{
-                test = "0";
-            }
-            console.log(gender)
-        subject_id = name+"-"+age.toString()+"-"+gender + "-"+ test + "-" + med + "-" + subject_id.toString();
-        console.log(subject_id)  
-        jsPsych.data.addProperties({  
-          subject: subject_id});
-      },
-    };
+		// Need to take demographic information from the user .
+		var demogarphics = {
+			type: "survey-text",
+			questions: [
+				{ prompt: "Name : ", columns: 50, name: "firstname" },
+				{ prompt: "Age : ", columns: 3, name: "Age", required: true },
+				{
+					prompt: "Gender",
+					columns: 15,
+					name: "Gender",
+					required: true,
+				},
+				{
+					prompt: "Have you taken this test before?",
+					placeholder: "Yes/No",
+					columns: 15,
+					name: "prior_practice",
+				},
+				{
+					prompt: "Profession",
+					columns: 15,
+					name: "Profession",
+					required: true,
+				},
+			],
+			preamble: "<h1>Basic information</h1>",
+			on_finish: function (data) {
+				// Generating new subject id
+				console.log(jsPsych.data.get().select("response")["values"]);
+				var subject_id = jsPsych.randomization.randomID(5);
+				var name = jsPsych.data
+					.get()
+					.select("response")
+					["values"][0]["firstname"].toLowerCase();
+				var age = jsPsych.data.get().select("response")["values"][0]["Age"];
+				var gender = jsPsych.data
+					.get()
+					.select("response")
+					["values"][0]["Gender"].toLowerCase();
+				var med = jsPsych.data
+					.get()
+					.select("response")
+					["values"][0]["Profession"].toLowerCase();
+				var test = jsPsych.data
+					.get()
+					.select("response")
+					["values"][0]["prior_practice"].toLowerCase();
+				if (gender === "m") {
+					gender = "1";
+				} else {
+					gender = "0";
+				}
+				if ((med === "Student") | (med === "student")) {
+					med = "0";
+				} else {
+					med = "1";
+				}
+				if (test === "yes") {
+					test = "1";
+				} else {
+					test = "0";
+				}
+				console.log(gender);
+				subject_id =
+					name +
+					"-" +
+					age.toString() +
+					"-" +
+					gender +
+					"-" +
+					test +
+					"-" +
+					med +
+					"-" +
+					subject_id.toString();
+				console.log(subject_id);
+				jsPsych.data.addProperties({
+					subject: subject_id,
+				});
+			},
+		};
 
-    var personality_survey = {
-      type: "survey-likert",
-      questions: [
-        { prompt: "Am the life of the party", labels: scale, required: true },
+		var personality_survey = {
+			type: "survey-likert",
+			questions: [
+				{ prompt: "Am the life of the party", labels: scale, required: true },
 
-        {
-          prompt: "Talk to a lot of different people at parties",
-          labels: scale,
-          required: true,
-        },
-        { prompt: "Don't talk a lot", labels: scale, required: true },
-        { prompt: "Keep in the background", labels: scale, required: true },
-        {
-          prompt: "Sympathize with others' feelings",
-          labels: scale,
-          required: true,
-        },
-        { prompt: "Feel others' emotions", labels: scale, required: true },
-        {
-          prompt: "Am not really interested in others",
-          labels: scale,
-          required: true,
-        },
-        {
-          prompt: "Am not interested in other people's problems",
-          labels: scale,
-          required: true,
-        },
-        { prompt: "Get chores done right away", labels: scale, required: true },
-        { prompt: "Like order", labels: scale, required: true },
-        {
-          prompt: "Often forget to put things back in their proper place",
-          labels: scale,
-          required: true,
-        },
-        { prompt: "Make a mess of things", labels: scale, required: true },
-        { prompt: "Have frequent mood swings", labels: scale, required: true },
-        { prompt: "Get upset easily", labels: scale, required: true },
-        {
-          prompt: "Am relaxed most of the time",
-          labels: scale,
-          required: true,
-        },
-        { prompt: "Seldom feel blue", labels: scale, required: true },
-        { prompt: "Have a vivid imagination", labels: scale, required: true },
-        {
-          prompt: "Have difficulty understanding abstract ideas",
-          labels: scale,
-          required: true,
-        },
-        {
-          prompt: "Am not interested in abstract ideas",
-          labels: scale,
-          required: true,
-        },
-        {
-          prompt: "Do not have a good imagination",
-          labels: scale,
-          required: true,
-        },
-      ],
-      //randomize_question_order: true,
-      scale_width: 500,
-      preamble:
-        "Here are a number of characteristics that may or may not apply to you. For example, do you agree that you are someone who likes to spend time with others? Please select the appropriate rating next to each statement to indicate the extent to which you agree or disagree with that statement.",
-    };
+				{
+					prompt: "Talk to a lot of different people at parties",
+					labels: scale,
+					required: true,
+				},
+				{ prompt: "Don't talk a lot", labels: scale, required: true },
+				{ prompt: "Keep in the background", labels: scale, required: true },
+				{
+					prompt: "Sympathize with others' feelings",
+					labels: scale,
+					required: true,
+				},
+				{ prompt: "Feel others' emotions", labels: scale, required: true },
+				{
+					prompt: "Am not really interested in others",
+					labels: scale,
+					required: true,
+				},
+				{
+					prompt: "Am not interested in other people's problems",
+					labels: scale,
+					required: true,
+				},
+				{ prompt: "Get chores done right away", labels: scale, required: true },
+				{ prompt: "Like order", labels: scale, required: true },
+				{
+					prompt: "Often forget to put things back in their proper place",
+					labels: scale,
+					required: true,
+				},
+				{ prompt: "Make a mess of things", labels: scale, required: true },
+				{ prompt: "Have frequent mood swings", labels: scale, required: true },
+				{ prompt: "Get upset easily", labels: scale, required: true },
+				{
+					prompt: "Am relaxed most of the time",
+					labels: scale,
+					required: true,
+				},
+				{ prompt: "Seldom feel blue", labels: scale, required: true },
+				{ prompt: "Have a vivid imagination", labels: scale, required: true },
+				{
+					prompt: "Have difficulty understanding abstract ideas",
+					labels: scale,
+					required: true,
+				},
+				{
+					prompt: "Am not interested in abstract ideas",
+					labels: scale,
+					required: true,
+				},
+				{
+					prompt: "Do not have a good imagination",
+					labels: scale,
+					required: true,
+				},
+			],
+			//randomize_question_order: true,
+			scale_width: 500,
+			preamble:
+				"Here are a number of characteristics that may or may not apply to you. For example, do you agree that you are someone who likes to spend time with others? Please select the appropriate rating next to each statement to indicate the extent to which you agree or disagree with that statement.",
+		};
 
-    var fullscreen_trial = {
-      type: "fullscreen",
-      fullscreen_mode: true,
-    };
+		var fullscreen_trial = {
+			type: "fullscreen",
+			fullscreen_mode: true,
+		};
 
-    var fullscreen_trial_exit = {
-      type: "fullscreen",
-      fullscreen_mode: false,
-    };
+		var fullscreen_trial_exit = {
+			type: "fullscreen",
+			fullscreen_mode: false,
+		};
 
-    var timeline = [
-      preload,
-      demogarphics,
-      overview,
-      declaration,
-      personality_survey,
-      init_camera,
-      instructions_cal,
-      val,
-      validation_instructions,
-      validate,
-      fullscreen_trial,
-    ];
-    var sam_happy = {
-      type: "image-button-response",
-      stimulus: "../assets/images/Sam_happy.jpeg",
-      //trial_duration: 1000,
-      choices: ["1", "2", "3", "4", "5"],
-      prompt:
-        "<p>How happy you felt after watching the AD?</p><p>(Mark the button number closest to the felt emotion)</p>",
-      stimulus_width: 1000,
-      maintain_aspect_ratio: true,
-      post_trial_gap: 0,
-    };
+		var timeline = [
+			preload,
+			demogarphics,
+			overview,
+			declaration,
+			personality_survey,
+			init_camera,
+			instructions_cal,
+			val,
+			validation_instructions,
+			validate,
+			fullscreen_trial,
+		];
+		var sam_happy = {
+			type: "image-button-response",
+			stimulus: "../assets/images/Sam_happy.jpeg",
+			//trial_duration: 1000,
+			choices: ["1", "2", "3", "4", "5"],
+			prompt:
+				"<p>How happy you felt after watching the AD?</p><p>(Mark the button number closest to the felt emotion)</p>",
+			stimulus_width: 1000,
+			maintain_aspect_ratio: true,
+			post_trial_gap: 0,
+		};
 
-    var sam_excitement = {
-      type: "image-button-response",
-      stimulus: "../assets/images/Sam_excitement.jpeg",
-      //trial_duration: 1000,
-      choices: ["1", "2", "3", "4", "5"],
-      prompt:
-        "<p>Did you feel excitement while watching the AD?</p><p>(Mark the button number closest to the felt emotion)</p>",
-      stimulus_width: 1000,
-      maintain_aspect_ratio: true,
-      post_trial_gap: 0,
-    };
+		var sam_excitement = {
+			type: "image-button-response",
+			stimulus: "../assets/images/Sam_excitement.jpeg",
+			//trial_duration: 1000,
+			choices: ["1", "2", "3", "4", "5"],
+			prompt:
+				"<p>Did you feel excitement while watching the AD?</p><p>(Mark the button number closest to the felt emotion)</p>",
+			stimulus_width: 1000,
+			maintain_aspect_ratio: true,
+			post_trial_gap: 0,
+		};
 
-    var post_video_survey = {
-      type: "survey-likert",
-      questions: [
-        {
-          prompt: "Have you seen the Advertisement before?",
-          labels: ["Yes", "No"],
-          required: true,
-        },
-        {
-          prompt: "How much did you LIKE the AD  that you just watched ?",
-          labels: scale,
-          required: true
-        },
-        {
-          prompt: "Did you feel excitement while watching the AD?",
-          labels: scale,
-          required: true
-        },
+		var post_video_survey = {
+			type: "survey-likert",
+			questions: [
+				{
+					prompt: "Have you seen the Advertisement before?",
+					labels: ["Yes", "No"],
+					required: true,
+				},
+				{
+					prompt: "How much did you LIKE the AD  that you just watched ?",
+					labels: scale,
+					required: true,
+				},
+				{
+					prompt: "Did you feel excitement while watching the AD?",
+					labels: scale,
+					required: true,
+				},
 
-        {
-          prompt: "How likely are you to MENTION this ad to someone else ?",
-          labels: likely,
-          required: true
-        },
-        {
-          prompt:
-            "If you watched this AD on a OTT platform/ website , how likely would you be to SHARE it with someone else ?",
-          labels: likely,
-          required: true
-        },
-      ],
-      scale_width: 500,
-    };
+				{
+					prompt: "How likely are you to MENTION this ad to someone else ?",
+					labels: likely,
+					required: true,
+				},
+				{
+					prompt:
+						"If you watched this AD on a OTT platform/ website , how likely would you be to SHARE it with someone else ?",
+					labels: likely,
+					required: true,
+				},
+			],
+			scale_width: 500,
+		};
 
-    var video_start_page = {
-      type: "html-keyboard-response",
-      stimulus: "Now the Videos will play",
-      choices: jsPsych.NO_KEYS,
-      trial_duration: 2000,
-      on_start: function () {
-        jsPsych.extensions["webgazer"].resume();
-        jsPsych.extensions["webgazer"].showPredictions();
-      },
-    };
-    timeline.push(video_start_page);
+		var video_start_page = {
+			type: "html-keyboard-response",
+			stimulus: "Now the Videos will play",
+			choices: jsPsych.NO_KEYS,
+			trial_duration: 2000,
+			on_start: function () {
+				jsPsych.extensions["webgazer"].resume();
+				jsPsych.extensions["webgazer"].showPredictions();
+			},
+		};
+		timeline.push(video_start_page);
 
-    var num2word = {1:"one",
-                    2:"two",
-                    3:"three",
-                    4:"four",
-                	5:"five",
-                	6:"six",
-                	7:"seven",
-                	8:"eight",
-                	9:"nine",
-                	10:"ten",
-                	11:"eleven",
-                	12:"twelve",
-                	13:"thirteen",
-                	14:"fourteen"}
+		var num2word = {
+			1: "one",
+			2: "two",
+			3: "three",
+			4: "four",
+			5: "five",
+			6: "six",
+			7: "seven",
+			8: "eight",
+			9: "nine",
+			10: "ten",
+			11: "eleven",
+			12: "twelve",
+			13: "thirteen",
+			14: "fourteen",
+		};
 
-    for (let i = 1; i <= 14; i++) {
-      //console.log(numberToWords.toWords(i));
-      video_number = num2word[i];
-      var video_trial = {
-        type: "video-button-response",
-        stimulus: [`video/${video_number}.mp4`],
-        choices: ["Continue"],
-        button_html: '<div style="font-size:40px;">%choice%</div>',
-        margin_vertical: "4px",
-        margin_horizontal: "4px",
-        prompt:
-          '<div style="width: 1440px;border: thin solid #0000FF ; border-radius: 10px ;">' +
-          `
+		for (let i = 1; i <= 14; i++) {
+			video_number = num2word[i];
+			var video_trial = {
+				type: "video-button-response",
+				stimulus: [`../video/${video_number}.mp4`],
+				choices: ["Continue"],
+				button_html: '<div style="font-size:40px;">%choice%</div>',
+				margin_vertical: "2px",
+				margin_horizontal: "2px",
+				prompt:
+					'<div style="width: 1200px;border: thin solid #0000FF ; border-radius: 10px ;">' +
+					`
     <ul>
-    <li style="text-align:left; padding:8px; font-size: 18px">  Once the video ends click on Continue  </li>
+    <li style="text-align:left ; padding:8px; font-size: 18px">  Once the video ends click on Continue  </li>
     <li style="text-align:left; padding:8px; font-size: 18px"> After the video you have to fiil a short form that contain questions related to the ad</li>
 
     </ul>` +
-          "</div>",
-        width: window.screen.width,
-        height: window.screen.height,
-        autoplay: true,
-        response_ends_trial: true,
-        response_allowed_while_playing: false,
-        data: {
-    		time: function(){ 
-          		var n = new Date();
-          		return n.getTime()}
-        }, 
-        extensions: [
-          {
-            type: "webgazer",
-            params: {
-              targets: ["#jspsych-video-button-response-stimulus"],
-            },
-          },
-        ],
-      };
+					"</div>",
+				width: window.screen.width,
+				height: window.screen.height-180,
+				autoplay: true,
+				response_ends_trial: true,
+				response_allowed_while_playing: false,
+				data: {
+					time: function () {
+						var n = new Date();
+						return n.getTime();
+					},
+				},
+				extensions: [
+					{
+						type: "webgazer",
+						params: {
+							targets: ["#jspsych-video-button-response-stimulus"],
+						},
+					},
+				],
+			};
 
-      timeline.push(video_trial, post_video_survey,sam_happy, sam_excitement);
-    }
+			timeline.push(video_trial, post_video_survey, sam_happy, sam_excitement);
+		}
 
-    let constraintObj = {
-      audio: false,
-      video: {  
-        facingMode: "user", 
-        width: { min: 640, ideal: 1280, max: 1920 },  
-        height: { min: 480, ideal: 720, max: 1080 },
-        frameRate: { ideal: 30, max: 60 },   
-},  
-    };
-    // width: 1280, height: 720  -- preference only
-    // facingMode: {exact: "user"}
-    // facingMode: "environment"
+		let constraintObj = {
+			audio: false,
+			video: {
+				facingMode: "user",
+				width: { min: 640, ideal: 1280, max: 1920 },
+				height: { min: 480, ideal: 720, max: 1080 },
+				frameRate: { ideal: 30, max: 60 },
+			},
+		};
+		// width: 1280, height: 720  -- preference only
+		// facingMode: {exact: "user"}
+		// facingMode: "environment"
 
-    //handle older browsers that might implement getUserMedia in some way
-    if (navigator.mediaDevices === undefined) {
-      navigator.mediaDevices = {};
-      navigator.mediaDevices.getUserMedia = function (constraintObj) {
-        let getUserMedia =
-          navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-        if (!getUserMedia) {
-          return Promise.reject(
-            new Error("getUserMedia is not implemented in this browser")
-          );
-        }
-        return new Promise(function (resolve, reject) {
-          getUserMedia.call(navigator, constraintObj, resolve, reject);
-        });
-      };
-    } else {
-      navigator.mediaDevices
-        .enumerateDevices()
-        .then((devices) => {
-          devices.forEach((device) => {
-            console.log(device.kind.toUpperCase(), device.label);
-            //, device.deviceId
-          });
-        })
-        .catch((err) => {
-          console.log(err.name, err.message);
-        });
-    }
+		//handle older browsers that might implement getUserMedia in some way
+		if (navigator.mediaDevices === undefined) {
+			navigator.mediaDevices = {};
+			navigator.mediaDevices.getUserMedia = function (constraintObj) {
+				let getUserMedia =
+					navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+				if (!getUserMedia) {
+					return Promise.reject(
+						new Error("getUserMedia is not implemented in this browser")
+					);
+				}
+				return new Promise(function (resolve, reject) {
+					getUserMedia.call(navigator, constraintObj, resolve, reject);
+				});
+			};
+		} else {
+			navigator.mediaDevices
+				.enumerateDevices()
+				.then((devices) => {
+					devices.forEach((device) => {
+						console.log(device.kind.toUpperCase(), device.label);
+						//, device.deviceId
+					});
+				})
+				.catch((err) => {
+					console.log(err.name, err.message);
+				});
+		}
 
-    navigator.mediaDevices  
-.getUserMedia(constraintObj)  
-.then(function (mediaStreamObj) { 
-    //connect the media stream to the first video element 
-    let video = document.querySelector("video");  
-    if ("srcObject" in video) { 
-      video.srcObject = mediaStreamObj; 
-      var n = new Date();
-      
-      jsPsych.data.addProperties({  
-                frameRate: mediaStreamObj.getVideoTracks()[0].getSettings().frameRate,
-                recording_start: n.getTime() });
-    } else {  
-      //old version 
-      video.src = window.URL.createObjectURL(mediaStreamObj); 
-  } 
-  video.onloadedmetadata = function (ev) {  
-      //show in the video element what is being captured by the webcam  
-      //video.play();
-      console.log("Video Recording!");
-  };  
-    //add listeners for saving video/audio  
-    //let start = document.getElementById("btnStart");  
-    //let stop = document.getElementById("btnStop");  
-    //let vidSave = document.getElementById("vid2");  
-    let mediaRecorder = new MediaRecorder(mediaStreamObj);  
-    let chunks = [];  
-    mediaRecorder.start();  
-    console.log(mediaRecorder.state); 
-    // stop.addEventListener("click", (ev) => { 
-    //   mediaRecorder.stop();  
-    // });  
-    mediaRecorder.ondataavailable = function (ev) { 
-      chunks.push(ev.data); 
-        console.log(chunks);
-    };  
-    mediaRecorder.onstop = (ev) => {  
-      let blob = new Blob(chunks, { type: "video/mp4;" });  
-      chunks = [];  
-      // let videoURL = window.URL.createObjectURL(blob); 
-      // vidSave.src = videoURL;  
+		navigator.mediaDevices
+			.getUserMedia(constraintObj)
+			.then(function (mediaStreamObj) {
+				//connect the media stream to the first video element
+				let video = document.querySelector("video");
+				if ("srcObject" in video) {
+					video.srcObject = mediaStreamObj;
+					var n = new Date();
 
-      //local save
-      // var filename = "data_video.mp4";  
-      // console.log(blob);  
-      // saveAs(blob, filename); 
-      // // Need to save this on Server. 
-      // console.log("File saved Locally"); 
+					jsPsych.data.addProperties({
+						frameRate: mediaStreamObj.getVideoTracks()[0].getSettings()
+							.frameRate,
+						recording_start: n.getTime(),
+					});
+				} else {
+					//old version
+					video.src = window.URL.createObjectURL(mediaStreamObj);
+				}
+				video.onloadedmetadata = function (ev) {
+					//show in the video element what is being captured by the webcam
+					//video.play();
+					console.log("Video Recording!");
+				};
+				//add listeners for saving video/audio
+				//let start = document.getElementById("btnStart");
+				//let stop = document.getElementById("btnStop");
+				//let vidSave = document.getElementById("vid2");
+				let mediaRecorder = new MediaRecorder(mediaStreamObj);
+				let chunks = [];
+				mediaRecorder.start();
+				console.log(mediaRecorder.state);
+				// stop.addEventListener("click", (ev) => {
+				//   mediaRecorder.stop();
+				// });
+				mediaRecorder.ondataavailable = function (ev) {
+					chunks.push(ev.data);
+					console.log(chunks);
+				};
+				mediaRecorder.onstop = (ev) => {
+					let blob = new Blob(chunks, { type: "video/mp4;" });
+					chunks = [];
+					// let videoURL = window.URL.createObjectURL(blob);
+					// vidSave.src = videoURL;
 
-      //var data = new FormData();
-      //data.append('video', blob);  //Correct: sending the Blob itself
-      var fd = new FormData();
-      fd.append('fname', 'test.webm');
-      fd.append('file', blob);
-      $.ajax({
-        type: "POST",
-        enctype: 'multipart/form-data',
-        url: "/video_data",
-        data: fd,
-        processData: false,
-        contentType: false,
-        cache: false,
-        timeout: 600000,
-        beforeSend: function () {
-               $("loader").removeClass("hidden");
-               alert("Now data will be uploaded please don't exit. It may take a few minutes.")
-        },
-        afterSend: function(){
-            alert("video after send")
-        },
-        
-        success: function (response) {
-            alert("Video saved at server successfully!")
-            Redirect();
+					//local save
+					// var filename = "data_video.mp4";
+					// console.log(blob);
+					// saveAs(blob, filename);
+					// // Need to save this on Server.
+					// console.log("File saved Locally");
 
+					//var data = new FormData();
+					//data.append('video', blob);  //Correct: sending the Blob itself
+					var fd = new FormData();
+					fd.append("fname", "test.webm");
+					fd.append("file", blob);
+					$.ajax({
+						type: "POST",
+						enctype: "multipart/form-data",
+						url: "/video_data",
+						data: fd,
+						processData: false,
+						contentType: false,
+						cache: false,
+						timeout: 600000,
+						beforeSend: function () {
+							$("loader").removeClass("hidden");
+							alert(
+								"Now data will be uploaded please don't exit. It may take a few minutes."
+							);
+						},
+						afterSend: function () {
+							alert("video after send");
+						},
 
-        },
-        error: function (e) {
-            console.log("ERROR : ", e);
-        }
-    });
-  };  
+						success: function (response) {
+							alert("Video saved at server successfully!");
+							Redirect();
+						},
+						error: function (e) {
+							console.log("ERROR : ", e);
+						},
+					});
+				};
 
-        function saveData(data){
-        var fd = new FormData();
-        blob = new Blob([data['data']],{type:"text/csv;"});
-        fd.append('fname', data['subject_id']+'.csv');
-        fd.append('file', blob);
-        $.ajax({
-          type:"POST",
-          cache: false,
-          url: "/save_data", 
-                enctype: 'multipart/form-data',
-                //dataType: "json",
-          //data: JSON.stringify(data,function replacer(key, value) { return value}),
-                //contentType: "application/json",
-          data : fd, 
-                contentType: false,
-                processData: false,
-                timeout: 600000,
+				function saveData(data) {
+					var fd = new FormData();
+					blob = new Blob([data["data"]], { type: "text/csv;" });
+					fd.append("fname", data["subject_id"] + ".csv");
+					fd.append("file", blob);
+					$.ajax({
+						type: "POST",
+						cache: false,
+						url: "/save_data",
+						enctype: "multipart/form-data",
+						//dataType: "json",
+						//data: JSON.stringify(data,function replacer(key, value) { return value}),
+						//contentType: "application/json",
+						data: fd,
+						contentType: false,
+						processData: false,
+						timeout: 600000,
 
-          success:(response)=>{
-            alert("Data saved successfully! Please wait for the video to be saved.")
-            //window.location.href="/";
-          }
+						success: (response) => {
+							alert(
+								"Data saved successfully! Please wait for the video to be saved."
+							);
+							//window.location.href="/";
+						},
+					})
+					.fail(function () {
+						alert(
+							"A problem occurred while writing to the database. Please contact the researcher for more information."
+						);
+						window.location.href = "/";
+					});
+				}
 
-      })
-
-      .fail(function() {
-        alert("A problem occurred while writing to the database. Please contact the researcher for more information.")
-          window.location.href = "/";
-        })
-      } 
-
-        jsPsych.init({
-          timeline: timeline,
-          extensions: [{ type: "webgazer" }],
-          show_progress_bar: true,
-          on_finish: function () {
-            fullscreen_trial_exit;
-            jsPsych.extensions["webgazer"].pause();
-            jsPsych.extensions["webgazer"].hidePredictions();
-            //jsPsych.data.displayData();
-            console.log(mediaRecorder.state);
-            var data = {columns: jsPsych.data.get().uniqueNames(),
-            subject_id : jsPsych.data.get().select('subject').values[0],
-            data: jsPsych.data.get().addToAll({tag: "<END>"}).csv()};
-            saveData(data);
-            mediaRecorder.stop();
-            
-          },
-        });
-      })
-      .catch(function (err) {
-        console.log(err.name, err.message);
-      });
-  </script>
+				jsPsych.init({
+					timeline: timeline,
+					extensions: [{ type: "webgazer" }],
+					show_progress_bar: true,
+					on_finish: function () {
+						fullscreen_trial_exit;
+						jsPsych.extensions["webgazer"].pause();
+						jsPsych.extensions["webgazer"].hidePredictions();
+						//jsPsych.data.displayData();
+						console.log(mediaRecorder.state);
+						var data = {
+							columns: jsPsych.data.get().uniqueNames(),
+							subject_id: jsPsych.data.get().select("subject").values[0],
+							data: jsPsych.data.get().addToAll({ tag: "<END>" }).csv(),
+						};
+						saveData(data);
+						mediaRecorder.stop();
+					},
+				});
+			})
+			.catch(function (err) {
+				console.log(err.name, err.message);
+			});
+	</script>
 </html>
 <!-- 
 /********************************* getUserMedia returns a Promise resolve -
