@@ -26,7 +26,6 @@
 		<video controls></video>
 	</body>
 
-
 	<script>
 		// preloading videos only works when the file is running on a server
 		// if you run this experiment by opening the file directly in the browser,
@@ -41,21 +40,9 @@
 			type: "instructions",
 		};
 
-		var scale = [
-			"Strongly Disagree",
-			"Disagree",
-			"Neutral",
-			"Agree",
-			"Strongly Agree",
-		];
+		var scale = ["(Low) 1", "2","(Neutral) 3 ","4" ,"5 (High)"];
 
-		var likely = [
-			"Highly Unlikely",
-			"Unlikely",
-			"May be",
-			"Likely",
-			"Highly likely",
-		];
+		var likely = ["1 (Low)", "2"," (Neutral) 3 ","4" ,"5 (High)"];
 
 		var preload = {
 			type: "preload",
@@ -70,6 +57,17 @@
 		var validation = {
 			type: "webgazer-calibrate",
 			randomize_calibration_order: false,
+			calibration_points: [
+				[15, 10],
+				[15, 50],
+				[15, 80],
+				[50, 10],
+				[50, 50],
+				[50, 80],
+				[80, 10],
+				[80, 50],
+				[80, 80],
+			],
 			repetitions_per_point: 1, //back to 2
 		};
 		var validation_instructions = {
@@ -167,7 +165,7 @@
 			type: "image-button-response",
 			stimulus: "../assets/images/methodology.png",
 			choices: ["continue"],
-			stimulus_width: window.screen.width-200,
+			stimulus_width: window.screen.width - 200,
 			prompt:
 				"<p>You'll see detailed instructions ahead. Press continue to proceed.</p>",
 		};
@@ -409,7 +407,8 @@
 			trial_duration: 2000,
 			on_start: function () {
 				jsPsych.extensions["webgazer"].resume();
-				jsPsych.extensions["webgazer"].showPredictions();
+				//jsPsych.extensions["webgazer"].showPredictions();
+				jsPsych.extensions["webgazer"].faceDetected();
 			},
 		};
 		timeline.push(video_start_page);
@@ -449,8 +448,8 @@
 
     </ul>` +
 					"</div>",
-				width: window.screen.width,
-				height: window.screen.height-180,
+				width: window.screen.width-100,
+				height: window.screen.height-100,
 				autoplay: true,
 				response_ends_trial: true,
 				response_allowed_while_playing: false,
@@ -466,6 +465,7 @@
 						params: {
 							targets: ["#jspsych-video-button-response-stimulus"],
 						},
+
 					},
 				],
 			};
@@ -624,8 +624,7 @@
 							);
 							//window.location.href="/";
 						},
-					})
-					.fail(function () {
+					}).fail(function () {
 						alert(
 							"A problem occurred while writing to the database. Please contact the researcher for more information."
 						);
