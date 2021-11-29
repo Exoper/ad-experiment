@@ -7,7 +7,7 @@ util = require('util'),
 unlinkFile = util.promisify(fs.unlink),
 upload = multer({ dest: __dirname+'/data/' });
 
-const { uploadFile } = require('./s3');
+// const { uploadFile } = require('./s3');
 
 
 // --- INSTANTIATE THE APP
